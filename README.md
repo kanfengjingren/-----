@@ -6,4 +6,22 @@
 然后是用vite指令快速启动，这个非常简单，但是为了提醒我自己，我还是写一下
 - 下载安装[node.js](https://nodejs.cn/download/)
 - 在根目录执行命令 `npm i vite -D`
-  ![vite命令](vite指令.png "vite命令")
+- 向**package.json**的大括号中添加这段代码
+  `"scripts": {
+    "dev": "vite"
+  },`
+- 最后执行命令`npm run dev`
+
+## 基本的html结构
+`<div class="flex allimg">
+            <img src="./image/法喜寺5.jpg" alt="">
+
+            <img src="./image/法喜寺1.jpg" alt="">
+            <img src="./image/法喜寺2.jpg" alt="">
+            <img src="./image/法喜寺3.jpg" alt="">
+            <img src="./image/法喜寺4.jpg" alt="">
+            <img src="./image/法喜寺5.jpg" alt="">
+
+            <img src="./image/法喜寺1.jpg" alt="">
+
+        </div>`
