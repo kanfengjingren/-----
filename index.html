@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./src/output.css">
+    <title>轮播图</title>
+</head>
+
+<body>
+    <div class="lunbo w-[600px] overflow-hidden">
+        <div class="flex allimg">
+            <img src="./image/法喜寺5.jpg" alt="">
+
+            <img src="./image/法喜寺1.jpg" alt="">
+            <img src="./image/法喜寺2.jpg" alt="">
+            <img src="./image/法喜寺3.jpg" alt="">
+            <img src="./image/法喜寺4.jpg" alt="">
+            <img src="./image/法喜寺5.jpg" alt="">
+
+            <img src="./image/法喜寺1.jpg" alt="">
+
+        </div>
+        <span class="text-blue-500">上天竺法喜讲寺</span>
+
+        <div class="flex justify-between bg-amber-200">
+            <div class="flex h-10 alldot items-center">
+                <div data-index="0" class="dot rounded-full bg-slate-500 dotactive"></div>
+                <div data-index="1" class="dot rounded-full bg-slate-500"></div>
+                <div data-index="2" class="dot rounded-full bg-slate-500"></div>
+                <div data-index="3" class="dot rounded-full bg-slate-500"></div>
+                <div data-index="4" class="dot rounded-full bg-slate-500"></div>
+            </div>
+            <div class="flex items-center">
+                <button class="pre"><svg t="1762775476110" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="1479" width="20" height="20">
+                        <path
+                            d="M690.8 126.5l0.7 0.7c12.3 12.3 12.3 32.4 0 44.7l-340 340L691.6 852c12.5 12.5 12.5 32.9 0 45.4s-32.9 12.5-45.4 0L283.9 535s-0.1-0.1-0.2-0.1l-0.7-0.7c-12.3-12.3-12.3-32.4 0-44.7l363-363c12.4-12.3 32.5-12.3 44.8 0z"
+                            fill="#2c2c2c" p-id="1480"></path>
+                    </svg></button>
+                <button class="next"><svg t="1762775518950" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="1836" width="20" height="20">
+                        <path
+                            d="M333.1 126.5l-0.7 0.7c-12.3 12.3-12.3 32.4 0 44.7l339.9 339.9-340.1 340.1c-12.5 12.5-12.5 32.9 0 45.4s32.9 12.5 45.4 0L740 535s0.1-0.1 0.2-0.1l0.7-0.7c12.3-12.3 12.3-32.4 0-44.7l-363-363c-12.4-12.3-32.5-12.3-44.8 0z"
+                            fill="#2c2c2c" p-id="1837"></path>
+                    </svg></button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const allimg = document.querySelector('.allimg');
+        const alldot = document.querySelector('.alldot');
+
+        const lunbo = document.querySelector('.lunbo');
+        const btu = document.querySelectorAll('button');
+
+        const span = document.querySelector('.lunbo span');
+
+        const li = alldot.children; //li[6]  0~6
+
+        let timerId;
+        //怎么实现效果呢？让图片向右边一字排开，然后滚动
+        let i = 1;
+
+        const text = ['上天竺法喜讲寺', '缎带', '鸟', '墙', '大雄宝殿'];
+
+        lunbo.addEventListener('mouseenter', () => clearInterval(timerId));
+        lunbo.addEventListener('mouseleave', () => timerId = setInterval(nextImg, 2000));
+        // btu[0].addEventListener('click', preImg);
+        // btu[1].addEventListener('click', nextImg);
+
+        btu[0].addEventListener('click', throttle(preImg,500));
+        btu[1].addEventListener('click', throttle(nextImg,500));
+
+
+
+        //点击小点实现
+        alldot.addEventListener('click', function (e) {
+            //得到这个li是第几个的
+            // console.log(e);
+            //  0 1 2 3 4
+            //0 1 2 3 4 5 6
+            //一一对应
+            if (e.target.classList.contains('dot')) {
+                i = Number(e.target.dataset.index) + 1;
+                // console.log(i);
+                span.innerHTML = text[i-1];
+                allimg.style.transform = `translate(${-(i * 600)}px)`;
+                //清除样式
+                clearClass();
+                //让点变白
+                li[i-1].classList.add('dotactive');
+            }
+        });
+
+        allimg.style.transform = 'translate(-600px)';//初始设置在第一个，而copy_1在更前面
+        timerId = setInterval(nextImg, 2000);
+
+        function nextImg() {
+            //让div整体向左移
+            i++;
+            if (i < 6) {
+                console.log(i);
+                console.log(-(i * 600));
+                span.innerHTML = text[i - 1];
+                allimg.style.transform = `translate(${-(i * 600)}px)`;
+                //清除样式
+                clearClass();
+                //让点变白
+                li[i - 1].classList.add('dotactive');
+            } else {
+                allimg.style.transform = `translate(${-(i * 600)}px)`;
+                clearClass();
+                span.innerHTML = text[0];
+                li[0].classList.add('dotactive');
+                //等待这个过度结束之后，再进行下面的操作
+                //怎么去判断这个有没有结束呢？用这个事件监听
+                allimg.addEventListener('transitionend', function () {
+                    //这里面的过程需要关闭动画和过渡效果，怎么关闭呢？
+                    allimg.style.transition = 'none';
+                    i = 1;
+                    allimg.style.transform = `translateX(-${600*i}px)`;
+                }, { once: true });
+            }
+            allimg.style.transition = 'all .5s';
+        }
+        function preImg() {
+            i--;
+            if (i > 0) {
+                span.innerHTML = text[i-1];
+                allimg.style.transform = `translate(${-(i * 600)}px)`;
+                clearClass();
+                li[i-1].classList.add('dotactive');
+            }else {
+                allimg.style.transform = `translate(${-(i * 600)}px)`;
+                clearClass();
+                span.innerHTML = text[4];
+                li[4].classList.add('dotactive');
+                //等待这个过度结束之后，再进行下面的操作
+                //怎么去判断这个有没有结束呢？用这个事件监听
+                allimg.addEventListener('transitionend', function () {
+                    //这里面的过程需要关闭动画和过渡效果，怎么关闭呢？
+                    allimg.style.transition = 'none';
+                    i = 5;
+                    allimg.style.transform = `translateX(-${600*i}px)`;
+                }, { once: true });//只执行一次
+            }
+            //重新加入动画
+            allimg.style.transition = 'all .5s';
+        }
+
+
+        function clearClass() {
+            for (let i = 0; i < li.length; i++) {
+                li[i].classList.remove('dotactive');
+            }
+        }
+
+        //加上防抖和节流？0.5秒多次点击只实现一次
+         function throttle(fn,t){
+            let timer = null;
+            return function(){
+                
+                if(!timer){
+                    fn();//立即执行
+                    timer = setTimeout(function(){
+                        timer = null;
+                    },t);//冷却周期
+                }
+
+            }
+        }
+    </script>
+</body>
+
+</html>
